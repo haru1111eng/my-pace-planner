@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MY PACE | スケジュール帳</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <div>
+        <p class="eyebrow">MY DAILY PLANNER</p>
+        <h1>MY PACE</h1>
+        <p class="tagline">自分のペースで、一歩ずつ。</p>
+      </div>
+      <div class="clock-card">
+        <p id="todayDate">日付を読み込み中</p>
+        <strong id="clock">--:--:--</strong>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="welcome-card">
+      <p class="eyebrow">TODAY'S MESSAGE</p>
+      <h2 id="welcomeTitle">今日も自分のペースで。</h2>
+      <p id="welcomeText">全部を一度に終わらせなくても大丈夫。まずは一つ選んでみよう。</p>
+    </section>
+
+    <section class="timer-card planning-timer-card" id="planningTimerSection">
+      <div>
+        <p class="eyebrow">PLAN YOUR DAY</p>
+        <h2>今日の予定を5分で整理</h2>
+        <p class="muted">完璧に決めなくて大丈夫。今日やりたいことを確認・追加しよう。</p>
+      </div>
+      <div class="timer-display" id="planningTimerDisplay">05:00</div>
+      <div class="button-row">
+        <button id="startPlanningTimerButton" class="button primary" type="button">整理を始める</button>
+        <button id="pausePlanningTimerButton" class="button secondary" type="button">一時停止</button>
+        <button id="resetPlanningTimerButton" class="button secondary" type="button">リセット</button>
+      </div>
+      <p id="planningTimerMessage" class="muted small" aria-live="polite">5分だけ、今日の予定を見直してみよう。</p>
+      <div id="planningTimerChoices" class="planning-choices hidden">
+        <h3>5分間お疲れさま！次はどうする？</h3>
+        <p class="muted small">今の自分に合うものを選ぼう。</p>
+        <div class="planning-choice-grid">
+          <button id="planningChooseTaskButton" class="option-button" type="button">
+            <span class="option-icon">☑️</span>
+            <span><strong>予定を選ぶ</strong><small>今日やることを一つ決める</small></span>
+            <span class="option-arrow">›</span>
+          </button>
+          <button id="planningAddTaskButton" class="option-button" type="button">
+            <span class="option-icon">➕</span>
+            <span><strong>予定を追加</strong><small>思い出した予定を登録する</small></span>
+            <span class="option-arrow">›</span>
+          </button>
+          <button id="planningTakeBreakButton" class="option-button" type="button">
+            <span class="option-icon">☕</span>
+            <span><strong>休憩する</strong><small>少し休んでから考える</small></span>
+            <span class="option-arrow">›</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-card" id="todaySection">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">TODAY</p>
+          <h2>今日の予定</h2>
+          <p class="section-description">登録した予定から、今やりたいことを自分で選ぼう。</p>
+        </div>
+        <span class="section-icon">☀️</span>
+      </div>
+
+      <div id="todayFocus" class="focus-card">
+        <p class="eyebrow">今、取り組むこと</p>
+        <h3 id="currentTaskName">まだ予定が選ばれていません</h3>
+        <p id="currentTaskDetail" class="muted">下の予定一覧から、取り組みたいものを選べます。</p>
+        <div class="countdown-row">
+          <div class="countdown-box">
+            <span>予定終了まで</span>
+            <strong id="taskCountdown">--:--</strong>
+          </div>
+          <div class="countdown-box">
+            <span>締め切りまで</span>
+            <strong id="deadlineCountdown">--</strong>
+          </div>
+        </div>
+        <div class="button-row">
+          <button class="button primary" id="completeTaskButton" type="button">この予定を完了</button>
+          <button class="button secondary" id="breakdownButton" type="button">タスクを分解</button>
+          <button class="button secondary" id="delayButton" type="button">15分ずらす案</button>
+        </div>
+        <div id="proposalArea" class="proposal hidden"></div>
+        <div id="subtaskArea" class="subtask-area hidden"></div>
+      </div>
+
+      <div class="choice-area">
+        <div class="subheading-row">
+          <h3>今日の予定一覧</h3>
+          <span class="muted small">選ぶのは自分</span>
+        </div>
+        <div id="todayTasks" class="task-list"></div>
+      </div>
+
+      <form id="todayTaskForm" class="add-form">
+        <h3>今日の予定を追加</h3>
+        <div class="form-grid">
+          <label class="field full">
+            <span>やること</span>
+            <input id="todayTaskName" type="text" placeholder="例：レポートを書く" required maxlength="100">
+          </label>
+          <label class="field">
+            <span>開始時刻</span>
+            <input id="todayTaskTime" type="time" required>
+          </label>
+          <label class="field">
+            <span>予定時間（分）</span>
+            <input id="todayTaskDuration" type="number" min="1" max="1440" value="30" required>
+          </label>
+          <label class="field">
+            <span>優先度</span>
+            <select id="todayTaskPriority">
+              <option value="low">低め</option>
+              <option value="normal" selected>ふつう</option>
+              <option value="high">高め</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>締め切り（任意）</span>
+            <input id="todayTaskDeadline" type="time">
+          </label>
+        </div>
+        <button class="button primary add-button" type="submit">＋ 今日の予定に追加</button>
+      </form>
+    </section>
+
+
+    <section id="nextActionSection" class="section-card next-action hidden">
+      <p class="eyebrow">NEXT STEP</p>
+      <h2 id="nextActionTitle">目標達成！</h2>
+      <p id="nextActionText">次はどうする？ 自分のペースで選ぼう。</p>
+      <div class="next-options">
+        <button id="chooseBreakButton" class="option-button" type="button">
+          <span class="option-icon">☕</span>
+          <span><strong>休憩する</strong><small>少し休んでから次を考える</small></span>
+          <span class="option-arrow">›</span>
+        </button>
+        <button id="chooseTaskButton" class="option-button" type="button">
+          <span class="option-icon">☑️</span>
+          <span><strong>自分で登録した予定をやる</strong><small>今日の予定から次のタスクを選ぶ</small></span>
+          <span class="option-arrow">›</span>
+        </button>
+      </div>
+      <div id="restPanel" class="rest-panel hidden">
+        <h3>どのくらい休憩する？</h3>
+        <div class="rest-options">
+          <button class="button secondary rest-duration" data-minutes="5" type="button">5分</button>
+          <button class="button secondary rest-duration" data-minutes="10" type="button">10分</button>
+          <button class="button secondary rest-duration" data-minutes="15" type="button">15分</button>
+        </div>
+        <div class="rest-clock">
+          <span id="restStatus">休憩時間</span>
+          <strong id="restCountdown">05:00</strong>
+        </div>
+        <div class="button-row">
+          <button id="startRestButton" class="button primary" type="button">休憩を始める</button>
+          <button id="endRestButton" class="button secondary" type="button">休憩を終了して選ぶ</button>
+        </div>
+        <p class="muted small">休憩が終わったら、もう一度「休憩する」か「次の予定を選ぶ」かを決められます。</p>
+      </div>
+      <div id="taskPickerPanel" class="task-picker hidden">
+        <h3>次にやる予定を選ぼう</h3>
+        <div id="nextTaskChoices" class="task-list"></div>
+        <button id="backToNextActionButton" class="button secondary" type="button">選択肢に戻る</button>
+      </div>
+    </section>
+
+    <section class="section-card island-section">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">YOUR LITTLE WORLD</p>
+          <h2>今日の一歩で、島を育てよう</h2>
+          <p class="section-description">タスクを完了すると島が少しずつ成長するよ。できた分だけで大丈夫。</p>
+        </div>
+        <span class="section-icon">🏝️</span>
+      </div>
+      <div id="islandScene" class="island-scene stage-0" aria-label="タスクの完了数に応じて成長する島">
+        <div class="island-sun"></div>
+        <div class="island-cloud cloud-one"></div>
+        <div class="island-cloud cloud-two"></div>
+        <div class="island-water water-back"></div>
+        <div class="island-water water-front"></div>
+        <svg class="island-art" viewBox="0 0 640 300" role="img" aria-label="小さな島。タスクを完了すると植物や家が増えていきます">
+          <ellipse cx="320" cy="224" rx="220" ry="49" fill="#e5c58c" />
+          <path d="M105 220 Q130 172 190 177 Q240 135 300 166 Q365 127 425 169 Q492 157 535 218 Q490 252 320 258 Q160 252 105 220Z" fill="#83b978" />
+          <path d="M150 217 Q185 184 225 199 Q285 164 325 190 Q385 165 430 198 Q472 187 502 220 Q430 244 320 244 Q220 244 150 217Z" fill="#a5cf82" />
+          <g class="island-feature sprout-one">
+            <path d="M246 199 Q244 181 248 171" stroke="#367d51" stroke-width="5" stroke-linecap="round" fill="none" />
+            <path d="M248 183 Q226 182 222 166 Q244 164 248 183Z" fill="#4e9a60" />
+            <path d="M248 176 Q252 157 271 157 Q270 176 248 176Z" fill="#63ad6d" />
+          </g>
+          <g class="island-feature tree-one">
+            <path d="M345 211 L349 163 L366 163 L370 214Z" fill="#9b6b45" />
+            <circle cx="358" cy="151" r="30" fill="#438c59" />
+            <circle cx="339" cy="160" r="19" fill="#5ca86a" />
+            <circle cx="376" cy="163" r="20" fill="#6bb575" />
+            <circle cx="359" cy="136" r="19" fill="#79bf7b" />
+          </g>
+          <g class="island-feature flower-one">
+            <path d="M193 225 L193 208" stroke="#39824e" stroke-width="3" />
+            <circle cx="193" cy="205" r="5" fill="#f2c45b" />
+            <circle cx="187" cy="205" r="4" fill="#ef8a9c" /><circle cx="199" cy="205" r="4" fill="#ef8a9c" />
+            <circle cx="193" cy="199" r="4" fill="#ef8a9c" /><circle cx="193" cy="211" r="4" fill="#ef8a9c" />
+          </g>
+          <g class="island-feature house-one">
+            <rect x="405" y="190" width="49" height="34" rx="3" fill="#f7e4b8" />
+            <path d="M396 192 L429 164 L463 192Z" fill="#cf795c" />
+            <rect x="425" y="203" width="11" height="21" rx="2" fill="#9c6748" />
+            <rect x="410" y="198" width="9" height="9" fill="#9dcbd0" />
+            <rect x="440" y="198" width="9" height="9" fill="#9dcbd0" />
+          </g>
+          <g class="island-feature flag-one">
+            <path d="M483 197 L483 145" stroke="#755c48" stroke-width="4" stroke-linecap="round" />
+            <path d="M485 147 L520 157 L485 169Z" fill="#f1a75f" />
+          </g>
+          <g class="island-feature flower-two">
+            <path d="M286 231 L286 216" stroke="#39824e" stroke-width="3" />
+            <circle cx="286" cy="213" r="5" fill="#f2c45b" />
+            <circle cx="280" cy="213" r="4" fill="#a98ce0" /><circle cx="292" cy="213" r="4" fill="#a98ce0" />
+            <circle cx="286" cy="207" r="4" fill="#a98ce0" /><circle cx="286" cy="219" r="4" fill="#a98ce0" />
+          </g>
+        </svg>
+        <div class="island-stage-label" id="islandStageLabel">まだ小さな島</div>
+      </div>
+      <div class="island-progress-summary">
+        <div class="progress-numbers">
+          <p><strong id="completedCount">0</strong><span>完了</span></p>
+          <p><strong id="remainingCount">0</strong><span>残り</span></p>
+          <p><strong id="progressPercent">0%</strong><span>達成率</span></p>
+        </div>
+        <div class="progress-track"><div id="progressBar" class="progress-bar"></div></div>
+        <p id="progressMessage" class="muted">小さな一歩から始めよう。</p>
+      </div>
+    </section>
+
+
+    <p class="footer-note">予定どおりに進まなくても大丈夫。自分に合うペースを見つけよう。</p>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="script.js"></script>
+</body>
+</html>
